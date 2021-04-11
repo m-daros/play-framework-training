@@ -44,6 +44,7 @@ class CustomerRepositoryActor extends Actor  {
 
       logger.info ( s"Deleting customer with customerId $customerId" )
       customers = customers - customerId
+
       sender () ! CustomerDeleted ( customerId )
     }
 
