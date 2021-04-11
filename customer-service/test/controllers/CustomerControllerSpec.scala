@@ -1,7 +1,6 @@
 package controllers
 
 import akka.actor.ActorSystem
-import akka.util.Timeout
 import model.Customer
 import org.scalatestplus.play._
 import org.scalatestplus.play.guice._
