@@ -3,7 +3,7 @@ package actors
 import akka.actor.Actor
 import model.Customer
 import model.commands.{ AddCustomer, DeleteCustomer, RetrieveCustomers, UpdateCustomer }
-import model.events.{ CustomerAdded, CustomerDeleted, CustomerUpdated, CustomersRetrieved }
+import model.events.{ CustomerAdded, CustomerDeleted, CustomerNotFound, CustomerUpdated, CustomersRetrieved }
 import play.api.Logger
 
 class CustomerRepositoryActor extends Actor  {
@@ -33,11 +33,23 @@ class CustomerRepositoryActor extends Actor  {
 
     case UpdateCustomer ( customerId, customer ) => {
 
-      val customerToUpdate = Customer ( customerId, customer.name )
-      customers = customers + ( customerId -> customerToUpdate )
-      logger.info ( s"Updating customer $customerToUpdate with customerId $customerId" )
+      customers.get ( customerId ) match {
 
-      sender () ! CustomerUpdated ( customerToUpdate )
+        case Some ( foundCustomer ) => {
+
+          customers = customers + ( customerId -> customer )
+          logger.info ( s"Updating customer, customerId: $customerId with value $customer" )
+
+          sender () ! CustomerUpdated ( customer )
+        }
+
+        case None => {
+
+          logger.info ( s"Unable to find customer, customerId: $customerId" )
+
+          sender () ! CustomerNotFound ( customerId )
+        }
+      }
     }
 
     case DeleteCustomer ( customerId: Int ) => {

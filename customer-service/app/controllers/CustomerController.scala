@@ -2,7 +2,7 @@ package controllers
 
 import actors.CustomerRepositoryActor
 import akka.actor.{ ActorSystem, Props }
-import model.Customer
+import model.{ ApiError, Customer }
 import model.commands.{ AddCustomer, DeleteCustomer, RetrieveCustomers, UpdateCustomer }
 
 import javax.inject._
@@ -11,7 +11,7 @@ import play.api.libs.json._
 import play.api.mvc._
 import akka.pattern.ask
 import akka.util.Timeout
-import model.events.{ CustomerAdded, CustomerDeleted, CustomerUpdated, CustomersRetrieved }
+import model.events.{ CustomerAdded, CustomerDeleted, CustomerNotFound, CustomerUpdated, CustomersRetrieved }
 
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.concurrent.duration._
@@ -22,6 +22,7 @@ class CustomerController @Inject () ( val controllerComponents: ControllerCompon
   implicit val timeout: Timeout = 5.seconds
   implicit val customerReads = Json.reads [Customer]
   implicit val customerWrites = Json.writes [Customer]
+  implicit val apiErrorWrites = Json.writes [ApiError]
 
   private val logger = Logger ( getClass )
 
@@ -81,17 +82,26 @@ class CustomerController @Inject () ( val controllerComponents: ControllerCompon
 
             case CustomerUpdated ( updatedCustomer ) => Ok ( Json.toJson ( updatedCustomer ) )
 
-            case message => InternalServerError ( s"Unable to update customer $id" )
+            case CustomerNotFound ( customerId ) => NotFound ( Json.toJson ( ApiError ( 404, s"Customer customerId $customerId not found" ) ) )
+
+            case message => {
+
+              InternalServerError ( s"Unable to update customer, customerId $id" )
+            }
           }
         }
 
         case e @ JsError ( _ )  => {
 
-          logger.error ( s"Unable to update customer $id" )
+          logger.error ( s"Unable to update customer $id ERRORS: ${e.errors}" )
           Future { BadRequest ( s"Invalid body" ) }
         }
       }
-    }.getOrElse ( Future { InternalServerError ( s"Unable to update customer $id" ) } )
+    }.getOrElse ( {
+
+      logger.error ( s"Bad request. Unable to update customer $id" )
+      Future { BadRequest ( s"Unable to update customer $id" ) }
+    } )
   }
 
   def deleteCustomer ( customerId: Int ) = Action.async { implicit request =>
