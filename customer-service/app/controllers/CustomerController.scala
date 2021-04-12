@@ -37,7 +37,7 @@ class CustomerController @Inject () ( val controllerComponents: ControllerCompon
 
       case CustomersRetrieved ( customers ) => Ok ( Json.toJson ( customers ) )
 
-      case message => InternalServerError ( s"Unable to retrieve customers" )
+      case message => InternalServerError ( Json.toJson ( ApiError ( 500, s"Unable to retrieve customers" ) ) )
     }
   }
 
@@ -55,17 +55,17 @@ class CustomerController @Inject () ( val controllerComponents: ControllerCompon
 
             case CustomerAdded ( savedCustomer ) => Ok ( Json.toJson ( savedCustomer ) )
 
-            case message => InternalServerError ( s"Unable to create customer $customer" )
+            case message => InternalServerError ( Json.toJson ( ApiError ( 500, s"Unable to create customer $customer" ) ) )
           }
         }
 
         case e @ JsError ( _ )  => {
 
           logger.error ( s"Unable to create customer $request.body.asJson" )
-          Future { BadRequest ( s"Invalid body" ) }
+          Future { BadRequest ( Json.toJson ( ApiError ( 400, s"Invalid body" ) ) ) }
         }
       }
-    }.getOrElse ( Future { InternalServerError ( s"Unable to create customer $request.body.asJson" ) } )
+    }.getOrElse ( Future { InternalServerError ( Json.toJson ( ApiError ( 500, s"Unable to create customer $request.body.asJson" ) ) ) } )
   }
 
   def updateCustomer ( id: Int ) = Action.async { implicit request =>
@@ -86,7 +86,7 @@ class CustomerController @Inject () ( val controllerComponents: ControllerCompon
 
             case message => {
 
-              InternalServerError ( s"Unable to update customer, customerId $id" )
+              InternalServerError ( Json.toJson ( ApiError ( 500, s"Unable to update customer, customerId $id" ) ) )
             }
           }
         }
@@ -94,13 +94,13 @@ class CustomerController @Inject () ( val controllerComponents: ControllerCompon
         case e @ JsError ( _ )  => {
 
           logger.error ( s"Unable to update customer $id ERRORS: ${e.errors}" )
-          Future { BadRequest ( s"Invalid body" ) }
+          Future { BadRequest ( Json.toJson ( ApiError ( 400, s"Invalid body" ) ) ) }
         }
       }
     }.getOrElse ( {
 
       logger.error ( s"Bad request. Unable to update customer $id" )
-      Future { BadRequest ( s"Unable to update customer $id" ) }
+      Future { BadRequest ( Json.toJson ( ApiError ( 400, s"Unable to update customer $id" ) ) ) }
     } )
   }
 
@@ -112,7 +112,7 @@ class CustomerController @Inject () ( val controllerComponents: ControllerCompon
 
       case CustomerDeleted ( customerId ) => Ok ( Json.toJson ( customerId ) )
 
-      case message => InternalServerError ( s"Unable to delete customer $customerId" )
+      case message => InternalServerError ( Json.toJson ( ApiError ( 500, s"Unable to delete customer $customerId" ) ) )
     }
   }
 }
