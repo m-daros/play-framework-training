@@ -15,3 +15,6 @@ libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "5.0.0
 
 // Adds additional packages into conf/routes
 // play.sbt.routes.RoutesKeys.routesImport += "mdaros.training.play.binders._"
+
+// Set http port to 8080 in DEV mode
+PlayKeys.devSettings := Seq ( "play.server.http.port" -> "8080" )

@@ -28,7 +28,7 @@ class BookController @Inject () ( val controllerComponents: ControllerComponents
   private val bookRepositoryActor = system.actorOf ( Props [BookRepositoryActor] )
 
 
-  def getBooks (): Action [AnyContent ] = Action.async { implicit request =>
+  def getBooks (): Action [AnyContent] = Action.async { implicit request =>
 
     logger.info ( "getBooks ()" )
 
@@ -67,7 +67,7 @@ class BookController @Inject () ( val controllerComponents: ControllerComponents
     }.getOrElse ( Future { InternalServerError ( jsonApiError ( 500, s"Unable to create book $request.body.asJson" ) ) } )
   }
 
-  def updateBook (id: Int ): Action [AnyContent ] = Action.async { implicit request =>
+  def updateBook (id: Int ): Action [AnyContent] = Action.async { implicit request =>
 
     request.body.asJson.map { body =>
 
@@ -103,7 +103,7 @@ class BookController @Inject () ( val controllerComponents: ControllerComponents
     } )
   }
 
-  def deleteBook (bookId: Int ): Action [AnyContent ] = Action.async { implicit request =>
+  def deleteBook ( bookId: Int ): Action [AnyContent] = Action.async { implicit request =>
 
     logger.info ( s"deleteBook ( $bookId )" )
 

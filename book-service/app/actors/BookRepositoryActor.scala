@@ -24,7 +24,7 @@ class BookRepositoryActor extends Actor  {
     case AddBook ( book ) => {
 
       val bookId = books.size + 1
-      val bookToAdd = Book ( bookId, book.name )
+      val bookToAdd = Book ( bookId, book.title )
       books = books + ( bookId -> bookToAdd )
       logger.info ( s"Adding book $bookToAdd with bookId $bookId" )
 

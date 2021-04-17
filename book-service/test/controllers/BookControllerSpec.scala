@@ -35,7 +35,7 @@ class BookControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
       // GIVEN I have no initial books
 
       // WHEN I ask to get all the books
-      val Some ( result ) = route ( app, FakeRequest ( GET, routes.BookController.getbooks ().path () ) )
+      val Some ( result ) = route ( app, FakeRequest ( GET, routes.BookController.getBooks ().path () ) )
 
       val books = booksReads.reads ( contentAsJson ( result ) ).get
 
@@ -57,7 +57,7 @@ class BookControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
       addbook ( Book ( 0, "Jack" ) )
 
       // WHEN I ask to get all books
-      val Some ( result ) = route ( app, FakeRequest ( GET, routes.bookController.getbooks ().path () ) )
+      val Some ( result ) = route ( app, FakeRequest ( GET, routes.BookController.getBooks ().path () ) )
 
       val books = booksReads.reads ( contentAsJson ( result ) ).get
 
@@ -76,7 +76,7 @@ class BookControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
 
       val book = Book ( 0, "Jack" )
 
-      val request = FakeRequest ( POST, routes.bookController.createbook ().path () ).withJsonBody ( bookWrites.writes ( book ) )
+      val request = FakeRequest ( POST, routes.BookController.createBook ().path () ).withJsonBody ( bookWrites.writes ( book ) )
 
       // WHEN I ask to create a book
       val Some ( result ) = route ( app, request )
@@ -103,7 +103,7 @@ class BookControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
       val book = Book ( 1, "Luke" )
 
       // WHEN I ask to update book with id 1
-      val Some ( result ) = route ( app, FakeRequest ( PUT, routes.bookController.updatebook ( 1 ).path () ).withJsonBody ( bookWrites.writes ( book ) ) )
+      val Some ( result ) = route ( app, FakeRequest ( PUT, routes.BookController.updateBook ( 1 ).path () ).withJsonBody ( bookWrites.writes ( book ) ) )
 
       val updatedbook = bookReads.reads ( contentAsJson ( result ) ).get
 
@@ -125,7 +125,7 @@ class BookControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
       val book = Book ( 1, "Luke" )
 
       // WHEN I ask to update book with id 1
-      val Some ( result ) = route ( app, FakeRequest ( PUT, routes.bookController.updatebook ( 1 ).path () ).withJsonBody ( bookWrites.writes ( book ) ) )
+      val Some ( result ) = route ( app, FakeRequest ( PUT, routes.BookController.updateBook ( 1 ).path () ).withJsonBody ( bookWrites.writes ( book ) ) )
 
       val apiError = apiErrorReads.reads ( contentAsJson ( result ) ).get
 
@@ -148,7 +148,7 @@ class BookControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
       addbook ( Book ( 0, "Mark" ) )
 
       // WHEN I ask to delete book with id 1
-      val Some ( result ) = route ( app, FakeRequest ( DELETE, routes.bookController.updatebook ( 1 ).path () ) )
+      val Some ( result ) = route ( app, FakeRequest ( DELETE, routes.BookController.updateBook ( 1 ).path () ) )
 
       // THEN I expect a response with 200 status code, application/json Content-Type
       assert ( status ( result ).equals ( OK ) )
@@ -161,14 +161,14 @@ class BookControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
 
   private def addbook ( book: Book ): Unit = {
 
-    val request = FakeRequest ( POST, routes.bookController.createbook ().path () ).withJsonBody ( bookWrites.writes ( book ) )
+    val request = FakeRequest ( POST, routes.BookController.createBook ().path () ).withJsonBody ( bookWrites.writes ( book ) )
     val Some ( res ) = route ( app, request )
     Await.result ( res, 5.seconds )
   }
 
   private def getbooks (): Seq [Book] = {
 
-    val Some ( result ) = route ( app, FakeRequest ( GET, routes.bookController.getbooks ().path () ) )
+    val Some ( result ) = route ( app, FakeRequest ( GET, routes.BookController.getBooks ().path () ) )
 
     booksReads.reads ( contentAsJson ( result ) ).get
   }

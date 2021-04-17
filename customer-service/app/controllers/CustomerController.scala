@@ -20,15 +20,15 @@ import scala.concurrent.duration._
 class CustomerController @Inject () ( val controllerComponents: ControllerComponents, val system: ActorSystem ) ( implicit ec: ExecutionContext ) extends MyBaseController {
 
   private implicit val timeout: Timeout = 5.seconds
-  private implicit val customerReads: Reads [Customer ] = Json.reads [Customer]
-  private implicit val customerWrites: OWrites [Customer ] = Json.writes [Customer]
+  private implicit val customerReads: Reads [Customer] = Json.reads [Customer]
+  private implicit val customerWrites: OWrites [Customer] = Json.writes [Customer]
 
   private val logger = Logger ( getClass )
 
   private val customerRepositoryActor = system.actorOf ( Props [CustomerRepositoryActor] )
 
 
-  def getCustomers (): Action [AnyContent ] = Action.async { implicit request =>
+  def getCustomers (): Action [AnyContent] = Action.async { implicit request =>
 
     logger.info ( "getCustomers ()" )
 
@@ -40,7 +40,7 @@ class CustomerController @Inject () ( val controllerComponents: ControllerCompon
     }
   }
 
-  def createCustomer (): Action [AnyContent ] = Action.async { implicit request =>
+  def createCustomer (): Action [AnyContent] = Action.async { implicit request =>
 
     request.body.asJson.map { body =>
 
@@ -67,7 +67,7 @@ class CustomerController @Inject () ( val controllerComponents: ControllerCompon
     }.getOrElse ( Future { InternalServerError ( jsonApiError ( 500, s"Unable to create customer $request.body.asJson" ) ) } )
   }
 
-  def updateCustomer ( id: Int ): Action [AnyContent ] = Action.async { implicit request =>
+  def updateCustomer ( id: Int ): Action [AnyContent] = Action.async { implicit request =>
 
     request.body.asJson.map { body =>
 
@@ -103,7 +103,7 @@ class CustomerController @Inject () ( val controllerComponents: ControllerCompon
     } )
   }
 
-  def deleteCustomer ( customerId: Int ): Action [AnyContent ] = Action.async { implicit request =>
+  def deleteCustomer ( customerId: Int ): Action [AnyContent] = Action.async { implicit request =>
 
     logger.info ( s"deleteCustomer ( $customerId )" )
 
