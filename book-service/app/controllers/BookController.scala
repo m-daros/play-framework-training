@@ -40,7 +40,7 @@ class BookController @Inject () ( val controllerComponents: ControllerComponents
     }
   }
 
-  def createBook (): Action [AnyContent ] = Action.async { implicit request =>
+  def createBook (): Action [AnyContent] = Action.async { implicit request =>
 
     request.body.asJson.map { body =>
 
