@@ -1,7 +1,7 @@
 package controllers
 
 import actors.CustomerRepositoryActor
-import akka.actor.{ ActorSystem, Props }
+import akka.actor.{ ActorRef, ActorSystem, Props }
 import model.{ ApiError, Customer }
 import model.commands.{ AddCustomer, DeleteCustomer, RetrieveCustomers, UpdateCustomer }
 
@@ -11,21 +11,26 @@ import play.api.libs.json._
 import play.api.mvc._
 import akka.pattern.ask
 import akka.util.Timeout
+import config.Names
 import model.events.{ CustomerAdded, CustomerDeleted, CustomerNotFound, CustomerUpdated, CustomersRetrieved }
+import play.api.db.slick.{ DatabaseConfigProvider, HasDatabaseConfigProvider }
+import slick.jdbc.JdbcProfile
 
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.concurrent.duration._
 
 @Singleton
-class CustomerController @Inject () ( val controllerComponents: ControllerComponents, val system: ActorSystem ) ( implicit ec: ExecutionContext ) extends MyBaseController {
+//class CustomerController @Inject () ( @Named ( Names.CUSTOMER_REPOSITORY_ACTOR ) customerRepositoryActor: ActorRef,
+class CustomerController @Inject () ( @Named ( "customer-repository-actor" ) customerRepositoryActor: ActorRef,
+                                      val controllerComponents: ControllerComponents,
+                                      val system: ActorSystem ) ( implicit ec: ExecutionContext )
+  extends MyBaseController {
 
   private implicit val timeout: Timeout = 5.seconds
   private implicit val customerReads: Reads [Customer] = Json.reads [Customer]
   private implicit val customerWrites: OWrites [Customer] = Json.writes [Customer]
 
   private val logger = Logger ( getClass )
-
-  private val customerRepositoryActor = system.actorOf ( Props [CustomerRepositoryActor] )
 
 
   def getCustomers (): Action [AnyContent] = Action.async { implicit request =>

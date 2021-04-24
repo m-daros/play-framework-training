@@ -5,8 +5,14 @@ import model.Customer
 import model.commands.{ AddCustomer, DeleteCustomer, RetrieveCustomers, UpdateCustomer }
 import model.events.{ CustomerAdded, CustomerDeleted, CustomerNotFound, CustomerUpdated, CustomersRetrieved }
 import play.api.Logger
+import play.api.db.slick.{ DatabaseConfigProvider, HasDatabaseConfigProvider }
+import slick.jdbc.JdbcProfile
 
-class CustomerRepositoryActor extends Actor  {
+import javax.inject.Inject
+
+class CustomerRepositoryActor @Inject () ( protected val dbConfigProvider: DatabaseConfigProvider )
+  extends Actor
+  with HasDatabaseConfigProvider [JdbcProfile] {
 
   private val logger = Logger ( getClass )
 
