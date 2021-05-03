@@ -5,9 +5,15 @@
 
 # An example controller showing a sample home page
 GET     /api/v1/customers               controllers.CustomerController.getCustomers()
+
++nocsrf
 POST    /api/v1/customers               controllers.CustomerController.createCustomer()
+
++nocsrf
 PUT     /api/v1/customers/:customerId   controllers.CustomerController.updateCustomer(customerId: Int)
+
++nocsrf
 DELETE  /api/v1/customers/:customerId   controllers.CustomerController.deleteCustomer(customerId: Int)
 
-# Map static resources from the /public folder to the /assets URL path
+# Map static resources from the /public folder to the /assets URL appPath
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

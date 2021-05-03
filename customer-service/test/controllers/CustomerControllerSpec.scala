@@ -10,12 +10,12 @@ import play.api.mvc.Results
 import play.api.test._
 import play.api.test.Helpers._
 
-import scala.concurrent.ExecutionContext.global._
+//import scala.concurrent.ExecutionContext.global._
 import java.util.concurrent.Executors
 import scala.concurrent.duration.DurationInt
 import scala.concurrent.{ Await, ExecutionContext }
 
-
+// TODO Mock CustomerRepositoryActor
 class CustomerControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting with Results {
 
   val system: ActorSystem = ActorSystem ( "CustomerControllerSpec" )

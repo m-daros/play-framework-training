@@ -1,7 +1,6 @@
 package controllers
 
-import actors.CustomerRepositoryActor
-import akka.actor.{ ActorRef, ActorSystem, Props }
+import akka.actor.{ ActorRef, ActorSystem }
 import model.{ ApiError, Customer }
 import model.commands.{ AddCustomer, DeleteCustomer, RetrieveCustomers, UpdateCustomer }
 
@@ -11,10 +10,7 @@ import play.api.libs.json._
 import play.api.mvc._
 import akka.pattern.ask
 import akka.util.Timeout
-import config.Names
 import model.events.{ CustomerAdded, CustomerDeleted, CustomerNotFound, CustomerUpdated, CustomersRetrieved }
-import play.api.db.slick.{ DatabaseConfigProvider, HasDatabaseConfigProvider }
-import slick.jdbc.JdbcProfile
 
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.concurrent.duration._
